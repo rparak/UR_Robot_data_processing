@@ -1,0 +1,14 @@
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\bin\Debug\UR_TCPip_RW_Console_app.exe.config
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\bin\Debug\UR_TCPip_RW_Console_app.exe
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\bin\Debug\UR_TCPip_RW_Console_app.pdb
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.csprojAssemblyReference.cache
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.csproj.CoreCompileInputs.cache
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.exe
+C:\Users\romanp\source\repos\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.pdb
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\bin\Debug\UR_TCPip_RW_Console_app.exe.config
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\bin\Debug\UR_TCPip_RW_Console_app.exe
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\bin\Debug\UR_TCPip_RW_Console_app.pdb
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.csprojAssemblyReference.cache
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.csproj.CoreCompileInputs.cache
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.exe
+C:\Users\romanp\Downloads\github_upload\UR\UR_TCPip_RW_Console_app\UR_TCPip_RW_Console_app\obj\Debug\UR_TCPip_RW_Console_app.pdb
