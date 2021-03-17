@@ -48,7 +48,7 @@ The application was tested on each of the robot types (UR3 -> real hardware + si
 
 <p align="center">
 <img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/cb_1.png width="650" height="350">
-  <img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/e_1.png width="650" height="350">
+<img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/c_1.png width="650" height="350">
 </p>
 
 ## Contact Info:
