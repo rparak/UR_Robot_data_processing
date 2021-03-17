@@ -46,6 +46,11 @@ The application was tested on each of the robot types (UR3 -> real hardware + si
 
 ## Example of reading the position of a joint from different series of Universal Robots UR3:
 
+<p align="center">
+<img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/cb_1.png width="650" height="350">
+  <img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/e_1.png width="650" height="350">
+</p>
+
 ## Contact Info:
 Roman.Parak@outlook.com
 
