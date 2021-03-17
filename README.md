@@ -26,6 +26,10 @@ The project is focused on a simple demonstration of client / server communicatio
 
 The application was tested on each of the robot types (UR3 -> real hardware + simulation, UR5, UR10, etc.) on the E and CB series (simulation using VMware). Communication (C# application) can be used in Unity3D for digital twins / augmented reality or in other relevant applications.
 
+<p align="center">
+<img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/communication_scheme.png width="650" height="350">
+</p>
+
 ## Project Hierarchy:
 
 **Client (C#) - Repositary [/UR_Robot_data_processing/UR_TCPip_RW_Console_app/UR_TCPip_RW_Console_app/]:**
