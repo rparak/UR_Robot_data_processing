@@ -22,7 +22,7 @@ C# (.NET Framework 4.6.1)
 
 ## Project Description:
 
-The project is focused on a simple demonstration of client / server communication via TCP / IP. In this case, it is a collaborative robot Universal Robots UR3 (server) and the client is a C# application. An example of an application is reading (joint/cartesian position) and writing data (movement).
+The project is focused on a simple demonstration of client / server communication via TCP / IP. In this case, it is a collaborative robot Universal Robots UR3 (server) and the client is a C# application. An example of an application is reading (joint/cartesian position) and writing data (movement -> linear, joint interpolation, etc.).
 
 The application was tested on each of the robot types (UR3 -> real hardware + simulation, UR5, UR10, etc.) on the E and CB series (simulation using VMware). Communication (C# application) can be used in Unity3D for digital twins / augmented reality or in other relevant applications.
 
@@ -39,6 +39,8 @@ The application was tested on each of the robot types (UR3 -> real hardware + si
 ```bash
 [ Datasheet ] /Client_InterfacesV3.14andV5.9.xlsx/
 ```
+
+## Example of reading the position of a joint from different series of Universal Robots UR3:
 
 ## Contact Info:
 Roman.Parak@outlook.com
