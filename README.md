@@ -24,7 +24,9 @@ C# (.NET Framework 4.6.1)
 
 The project is focused on a simple demonstration of client / server communication via TCP / IP. In this case, it is a collaborative robot Universal Robots UR3 / UR3e (server), which communicates with the client via the C# application. An example of an application is reading (Joint / Cartesian position) and writing data (movement -> linear, joint interpolation, etc.). The application was tested on each of the robot types (UR3 -> real hardware + simulation, UR5, UR10, etc.) E and CB series (simulation using VMware in Windows).
 
-The application uses performance optimization using multi-threaded programming. Communication (C# application) can be used in Unity3D for digital twins / augmented reality or in other relevant applications.
+Writing data is really simple, just create a variable of type STRING in accordance with certain principles, transform the data into a BYTE and send this command to the Server. Data is read using packets on the server (see the file for a description of the packet -> /Client_Data_Interfaces).
+
+The application uses performance optimization using multi-threaded programming. Communication (C# application) can be used in Unity3D for digital twins / augmented reality or in other relevant applications. 
 
 The project was realized at Institute of Automation and Computer Science, Brno University of Technology, Faculty of Mechanical Engineering (NETME Centre - Cybernetics and Robotics Division).
 
@@ -40,7 +42,7 @@ The project was realized at Institute of Automation and Computer Science, Brno U
 [ Main Program ] /Program.cs/
 ```
 
-**Data Interfaces - Repositary [UR_Robot_data_processing/Clinet_Data_Interfaces/]:**
+**Data Interfaces - Repositary [UR_Robot_data_processing/Client_Data_Interfaces/]:**
 
 ```bash
 [ Datasheet ] /Client_InterfacesV3.14andV5.9.xlsx/
