@@ -28,6 +28,9 @@ Writing data is really simple, just create a variable of type STRING in accordan
 
 The application uses performance optimization using multi-threaded programming. Communication (C# application) can be used in Unity3D for digital twins / augmented reality or in other relevant applications. 
 
+Sample application in the Unity3D program (Digital-Twin):
+[Universal Robots UR3 - Unity3D Robotics](https://github.com/rparak/Unity3D_Robotics_UR)
+
 The project was realized at Institute of Automation and Computer Science, Brno University of Technology, Faculty of Mechanical Engineering (NETME Centre - Cybernetics and Robotics Division).
 
 <p align="center">
