@@ -6,9 +6,11 @@
 ```bash
 Universal Robots Polyscope, Visual Studio (or something similar)
 ```
-Universal Robots: https://www.universal-robots.com/download/
 
-Visual Studio: https://visualstudio.microsoft.com/downloads/
+| Software/Package           | Link                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------- |
+| Universal Robots Polyscope | https://www.universal-robots.com/download/                                                     |
+| Visual Studio              | https://visualstudio.microsoft.com/downloads/                                         |
 
 **Programming Language:**
 ```bash
