@@ -42,7 +42,7 @@ The project was realized at Institute of Automation and Computer Science, Brno U
 
 ## Project Hierarchy:
 
-**Client (C#) - Repositary [/UR_Robot_data_processing/UR_TCPip_RW_Console_app/UR_TCPip_RW_Console_app/]:**
+**Client (C#) - Repositary [/UR_Robot_data_processing/UR_TCPip_RW_Console_app/]:**
 
 ```bash
 [ Main Program ] /Program.cs/
