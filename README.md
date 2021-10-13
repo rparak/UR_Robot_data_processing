@@ -64,5 +64,17 @@ The project was realized at Institute of Automation and Computer Science, Brno U
 ## Contact Info:
 Roman.Parak@outlook.com
 
+## Citation (BibTex)
+```bash
+@misc{RomanParak_DT_UR,
+  author = {Roman Parak},
+  title = {Data collection from the Universal Robots control unit using the TCP/IP communication protocol},
+  year = {2020-2021},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/rparak/UR_Robot_data_processing/}}
+}
+```
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
