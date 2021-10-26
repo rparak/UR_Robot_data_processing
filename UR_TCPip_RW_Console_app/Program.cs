@@ -80,11 +80,11 @@ namespace UR_TCPip_RW_Console_app
             //  Read Data:
             UR_Stream_Data.ip_address = "192.168.230.133";
             //  Communication speed: CB-Series 125 Hz, E-Series 500 Hz
-            UR_Control_Data.time_step = (1 / 125 * 1000);
+            UR_Stream_Data.time_step = ((1/125) * 1000);
             //  Write Data:
             UR_Control_Data.ip_address = "192.168.230.133";
             //  Communication speed: CB-Series 125 Hz, E-Series 500 Hz
-            UR_Control_Data.time_step = (1/125 * 1000);
+            UR_Control_Data.time_step = ((1/125) * 1000);
 
             // Start Stream {Universal Robots TCP/IP}
             UR_Stream ur_stream_robot = new UR_Stream();
