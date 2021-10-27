@@ -228,8 +228,6 @@ namespace UR_TCPip_RW_Console_app
 
             while (exit_thread == false)
             {
-                // https://www.universal-robots.com/articles/ur/interface-communication/tcpip-socket-communication-via-urscript/
-
                 // Note:
                 //  For more information about commands, see the URScript Programming Language document 
 
