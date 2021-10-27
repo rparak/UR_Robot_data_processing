@@ -217,67 +217,75 @@ namespace UR_TCPip_RW_Console_app
 
         public void UR_Control_Thread()
         {
-            if (tcp_client.Connected == false)
+            try
             {
-                // Connect to controller -> if the controller is disconnected
-                tcp_client.Connect(UR_Control_Data.ip_address, UR_Control_Data.port_number);
+
+                if (tcp_client.Connected == false)
+                {
+                    // Connect to controller -> if the controller is disconnected
+                    tcp_client.Connect(UR_Control_Data.ip_address, UR_Control_Data.port_number);
+                }
+
+                // Initialization TCP/IP Communication (Stream)
+                network_stream = tcp_client.GetStream();
+
+                while (exit_thread == false)
+                {
+                    // Note:
+                    //  For more information about commands, see the URScript Programming Language document 
+
+                    // Instruction 1 (Home Position): Joint Input Command, Move Joint Interpolation
+                    //  Get Bytes from String
+                    buffer_cmd = utf8.GetBytes("movej([" + UR_Control_Data.J_Orientation[0].ToString() + "," + UR_Control_Data.J_Orientation[1].ToString() + "," + UR_Control_Data.J_Orientation[2].ToString() + ","
+                                                         + UR_Control_Data.J_Orientation[3].ToString() + "," + UR_Control_Data.J_Orientation[4].ToString() + "," + UR_Control_Data.J_Orientation[5].ToString() + "],"
+                                                         + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")" + "\n");
+                    //  Send command to the robot
+                    network_stream.Write(buffer_cmd);
+                    //  Wait Time (5 seconds)
+                    Thread.Sleep(5000);
+
+                    // Instruction 2 (Multiple Positions): Cartesian Input Command, Move Linear Interpolation
+                    //  Get Bytes from String
+                    buffer_cmd = utf8.GetBytes("[movel(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
+                                               "movel(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ", "
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
+                                               "movel(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + UR_Control_Data.C_Position[2].ToString() + ", "
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
+                                               "movel(p[" + UR_Control_Data.C_Position[0].ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2]).ToString() + ", "
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
+                    //  Send command to the robot
+                    network_stream.Write(buffer_cmd);
+                    //  Wait Time (5 seconds)
+                    Thread.Sleep(5000);
+
+                    // Instruction 3 (Multiple Positions): Cartesian Input Command, Move Joint Interpolation
+                    //  Get Bytes from String
+                    buffer_cmd = utf8.GetBytes("[movej(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
+                                               "movej(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ", "
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
+                                               "movej(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + UR_Control_Data.C_Position[2].ToString() + ", "
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
+                                               "movej(p[" + UR_Control_Data.C_Position[0].ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2]).ToString() + ", "
+                                                           + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
+                                                           + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
+                    //  Send command to the robot
+                    network_stream.Write(buffer_cmd);
+                    //  Wait Time (5 seconds)
+                    Thread.Sleep(5000);
+                }
             }
-
-            // Initialization TCP/IP Communication (Stream)
-            network_stream = tcp_client.GetStream();
-
-            while (exit_thread == false)
+            catch (SocketException e)
             {
-                // Note:
-                //  For more information about commands, see the URScript Programming Language document 
-
-                // Instruction 1 (Home Position): Joint Input Command, Move Joint Interpolation
-                //  Get Bytes from String
-                buffer_cmd = utf8.GetBytes("movej([" + UR_Control_Data.J_Orientation[0].ToString() + "," + UR_Control_Data.J_Orientation[1].ToString() + "," + UR_Control_Data.J_Orientation[2].ToString() + ","
-                                                     + UR_Control_Data.J_Orientation[3].ToString() + "," + UR_Control_Data.J_Orientation[4].ToString() + "," + UR_Control_Data.J_Orientation[5].ToString() + "],"
-                                                     + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")" + "\n");
-                //  Send command to the robot
-                network_stream.Write(buffer_cmd);
-                //  Wait Time (5 seconds)
-                Thread.Sleep(5000);
-
-                // Instruction 2 (Multiple Positions): Cartesian Input Command, Move Linear Interpolation
-                //  Get Bytes from String
-                buffer_cmd = utf8.GetBytes("[movel(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
-                                           "movel(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ", "
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
-                                           "movel(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + UR_Control_Data.C_Position[2].ToString() + ", "
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
-                                           "movel(p[" + UR_Control_Data.C_Position[0].ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2]).ToString() + ", "
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
-                //  Send command to the robot
-                network_stream.Write(buffer_cmd);
-                //  Wait Time (5 seconds)
-                Thread.Sleep(5000);
-
-                // Instruction 3 (Multiple Positions): Cartesian Input Command, Move Joint Interpolation
-                //  Get Bytes from String
-                buffer_cmd = utf8.GetBytes("[movej(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
-                                           "movej(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ", "
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
-                                           "movej(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + UR_Control_Data.C_Position[2].ToString() + ", "
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
-                                           "movej(p[" + UR_Control_Data.C_Position[0].ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2]).ToString() + ", "
-                                                       + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
-                                                       + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
-                //  Send command to the robot
-                network_stream.Write(buffer_cmd);
-                //  Wait Time (5 seconds)
-                Thread.Sleep(5000);
+                Console.WriteLine("SocketException: {0}", e);
             }
         }
 
