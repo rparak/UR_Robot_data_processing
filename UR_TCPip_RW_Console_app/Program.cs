@@ -238,7 +238,7 @@ namespace UR_TCPip_RW_Console_app
                                                          + UR_Control_Data.J_Orientation[3].ToString() + "," + UR_Control_Data.J_Orientation[4].ToString() + "," + UR_Control_Data.J_Orientation[5].ToString() + "],"
                                                          + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")" + "\n");
                     //  Send command to the robot
-                    network_stream.Write(buffer_cmd);
+                    network_stream.Write(buffer_cmd, 0, buffer_cmd.Length);
                     //  Wait Time (5 seconds)
                     Thread.Sleep(5000);
 
@@ -257,7 +257,7 @@ namespace UR_TCPip_RW_Console_app
                                                            + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
                                                            + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
                     //  Send command to the robot
-                    network_stream.Write(buffer_cmd);
+                    network_stream.Write(buffer_cmd, 0, buffer_cmd.Length);
                     //  Wait Time (5 seconds)
                     Thread.Sleep(5000);
 
@@ -276,7 +276,7 @@ namespace UR_TCPip_RW_Console_app
                                                            + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
                                                            + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
                     //  Send command to the robot
-                    network_stream.Write(buffer_cmd);
+                    network_stream.Write(buffer_cmd, 0, buffer_cmd.Length);
                     //  Wait Time (5 seconds)
                     Thread.Sleep(5000);
                 }
