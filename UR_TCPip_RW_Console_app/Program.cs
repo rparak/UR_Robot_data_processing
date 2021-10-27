@@ -26,7 +26,6 @@ File Name: Program.cs
 // System Lib.
 using System;
 using System.Text;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
@@ -219,7 +218,6 @@ namespace UR_TCPip_RW_Console_app
         {
             try
             {
-
                 if (tcp_client.Connected == false)
                 {
                     // Connect to controller -> if the controller is disconnected
