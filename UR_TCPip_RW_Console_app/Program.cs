@@ -109,9 +109,9 @@ namespace UR_TCPip_RW_Console_app
                                    UR_Stream_Data.C_Position[0], UR_Stream_Data.C_Position[1], UR_Stream_Data.C_Position[2],
                                    UR_Stream_Data.C_Orientation[0], UR_Stream_Data.C_Orientation[1], UR_Stream_Data.C_Orientation[2]);
 
-                // Stop UR {Control / Stream}
-                ur_stream_robot.Stop();
-                ur_ctrl_robot.Stop();
+                // Destroy UR {Control / Stream}
+                ur_stream_robot.Destroy();
+                ur_ctrl_robot.Destroy();
 
                 // Application quit
                 Environment.Exit(0);
@@ -121,18 +121,24 @@ namespace UR_TCPip_RW_Console_app
 
     class UR_Stream
     {
-        // Initialization of variables
-        private Thread robot_thread      = null;
+        // Initialization of Class variables
+        //  Thread
+        private Thread robot_thread = null;
+        private bool exit_thread    = false;
+        //  TCP/IP Communication
         private TcpClient tcp_client     = new TcpClient();
         private NetworkStream network_stream = null;
-        private bool exit_thread = false;
-        private byte[] packet = new byte[2048];
+        //  Packet Buffer (Read)
+        private byte[] packet = new byte[1116];
 
         // Offset:
         //  Size of first packet in bytes (Integer)
         private const byte first_packet_size = 4;
         //  Size of other packets in bytes (Double)
         private const byte offset = 8;
+
+        // Total message length in bytes
+        private const UInt32 total_msg_length = 3288596480;
 
         public void UR_Stream_Thread()
         {
@@ -150,32 +156,33 @@ namespace UR_TCPip_RW_Console_app
                 while (exit_thread == false)
                 {
                     // Get the data from the robot
-                    if (network_stream.Read(packet, 0, packet.Length) > 0)
+                    if (network_stream.Read(packet, 0, packet.Length) != 0)
                     {
-                        // Reverses the order of elements in a one-dimensional array or part of an array.
-                        Array.Reverse(packet);
+                        if(BitConverter.ToUInt32(packet, first_packet_size - 4) == total_msg_length)
+                        {
+                            // Reverses the order of elements in a one-dimensional array or part of an array.
+                            Array.Reverse(packet);
 
-                        // Note:
-                        //  For more information on values 32... 37, etc., see the UR Client Interface document.
-
-                        // Read Joint Values in radians
-                        UR_Stream_Data.J_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (32 * offset));
-                        UR_Stream_Data.J_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (33 * offset));
-                        UR_Stream_Data.J_Orientation[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (34 * offset));
-                        UR_Stream_Data.J_Orientation[3] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (35 * offset));
-                        UR_Stream_Data.J_Orientation[4] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (36 * offset));
-                        UR_Stream_Data.J_Orientation[5] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (37 * offset));
-
-                        // Read Cartesian (Positon) Values in metres
-                        UR_Stream_Data.C_Position[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (56 * offset));
-                        UR_Stream_Data.C_Position[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (57 * offset));
-                        UR_Stream_Data.C_Position[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (58 * offset));
-                        // Read Cartesian (Orientation) Values in metres 
-                        UR_Stream_Data.C_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (59 * offset));
-                        UR_Stream_Data.C_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (60 * offset));
-                        UR_Stream_Data.C_Orientation[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (61 * offset));
+                            // Note:
+                            //  For more information on values 32... 37, etc., see the UR Client Interface document.
+                            // Read Joint Values in radians
+                            UR_Stream_Data.J_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (32 * offset));
+                            UR_Stream_Data.J_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (33 * offset));
+                            UR_Stream_Data.J_Orientation[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (34 * offset));
+                            UR_Stream_Data.J_Orientation[3] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (35 * offset));
+                            UR_Stream_Data.J_Orientation[4] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (36 * offset));
+                            UR_Stream_Data.J_Orientation[5] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (37 * offset));
+                            // Read Cartesian (Positon) Values in metres
+                            UR_Stream_Data.C_Position[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (56 * offset));
+                            UR_Stream_Data.C_Position[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (57 * offset));
+                            UR_Stream_Data.C_Position[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (58 * offset));
+                            // Read Cartesian (Orientation) Values in metres 
+                            UR_Stream_Data.C_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (59 * offset));
+                            UR_Stream_Data.C_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (60 * offset));
+                            UR_Stream_Data.C_Orientation[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (61 * offset));
+                        }
                     }
-                    Thread.Sleep(UR_Stream_Data.time_step);
+                    //Thread.Sleep(UR_Stream_Data.time_step);
                 }
             }
             catch (SocketException e)
@@ -186,33 +193,47 @@ namespace UR_TCPip_RW_Console_app
 
         public void Start()
         {
-            // Start a thread and listen to incoming messages
+            exit_thread = false;
+            // Start a thread to control Universal Robots (UR)
             robot_thread = new Thread(new ThreadStart(UR_Stream_Thread));
+            robot_thread.IsBackground = true;
             robot_thread.Start();
         }
         public void Stop()
         {
-            // Stop and exit thread
             exit_thread = true;
-            if (robot_thread == null && robot_thread.IsAlive == true)
+            // Start a thread
+            if (robot_thread.IsAlive == true)
             {
-                // Disconnect communication
+                Thread.Sleep(100);
+            }
+        }
+        public void Destroy()
+        {
+            // Start a thread and disconnect tcp/ip communication
+            Stop();
+            if (tcp_client.Connected == true)
+            {
                 network_stream.Dispose();
                 tcp_client.Close();
-                Thread.Sleep(1000);
             }
+            Thread.Sleep(100);
         }
     }
 
     class UR_Control
     {
-        // Initialization of variables
+        // Initialization of Class variables
+        //  Thread
         private Thread robot_thread = null;
+        private bool exit_thread = false;
+        //  TCP/IP Communication
         private TcpClient tcp_client = new TcpClient();
         private NetworkStream network_stream = null;
-        private bool exit_thread = false;
+        //  Packet Buffer (Write)
+        private byte[] packet_cmd;
+        //  Encoding
         private UTF8Encoding utf8 = new UTF8Encoding();
-        byte[] buffer_cmd;
 
         public void UR_Control_Thread()
         {
@@ -234,17 +255,17 @@ namespace UR_TCPip_RW_Console_app
 
                     // Instruction 1 (Home Position): Joint Input Command, Move Joint Interpolation
                     //  Get Bytes from String
-                    buffer_cmd = utf8.GetBytes("movej([" + UR_Control_Data.J_Orientation[0].ToString() + "," + UR_Control_Data.J_Orientation[1].ToString() + "," + UR_Control_Data.J_Orientation[2].ToString() + ","
+                    packet_cmd = utf8.GetBytes("movej([" + UR_Control_Data.J_Orientation[0].ToString() + "," + UR_Control_Data.J_Orientation[1].ToString() + "," + UR_Control_Data.J_Orientation[2].ToString() + ","
                                                          + UR_Control_Data.J_Orientation[3].ToString() + "," + UR_Control_Data.J_Orientation[4].ToString() + "," + UR_Control_Data.J_Orientation[5].ToString() + "],"
                                                          + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")" + "\n");
                     //  Send command to the robot
-                    network_stream.Write(buffer_cmd, 0, buffer_cmd.Length);
+                    network_stream.Write(packet_cmd, 0, packet_cmd.Length);
                     //  Wait Time (5 seconds)
                     Thread.Sleep(5000);
 
                     // Instruction 2 (Multiple Positions): Cartesian Input Command, Move Linear Interpolation
                     //  Get Bytes from String
-                    buffer_cmd = utf8.GetBytes("[movel(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
+                    packet_cmd = utf8.GetBytes("[movel(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
                                                            + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
                                                            + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
                                                "movel(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ", "
@@ -257,13 +278,13 @@ namespace UR_TCPip_RW_Console_app
                                                            + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
                                                            + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
                     //  Send command to the robot
-                    network_stream.Write(buffer_cmd, 0, buffer_cmd.Length);
+                    network_stream.Write(packet_cmd, 0, packet_cmd.Length);
                     //  Wait Time (5 seconds)
                     Thread.Sleep(5000);
 
                     // Instruction 3 (Multiple Positions): Cartesian Input Command, Move Joint Interpolation
                     //  Get Bytes from String
-                    buffer_cmd = utf8.GetBytes("[movej(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
+                    packet_cmd = utf8.GetBytes("[movej(p[" + UR_Control_Data.C_Position[0].ToString() + "," + UR_Control_Data.C_Position[1].ToString() + "," + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ","
                                                            + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
                                                            + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")," +
                                                "movej(p[" + (UR_Control_Data.C_Position[0] - 0.1).ToString() + ", " + UR_Control_Data.C_Position[1].ToString() + ", " + (UR_Control_Data.C_Position[2] - 0.1).ToString() + ", "
@@ -276,7 +297,7 @@ namespace UR_TCPip_RW_Console_app
                                                            + UR_Control_Data.C_Orientation[0].ToString() + "," + UR_Control_Data.C_Orientation[1].ToString() + "," + UR_Control_Data.C_Orientation[2].ToString() + "],"
                                                            + "a=" + UR_Control_Data.acceleration + ", v=" + UR_Control_Data.velocity + ")]" + "\n");
                     //  Send command to the robot
-                    network_stream.Write(buffer_cmd, 0, buffer_cmd.Length);
+                    network_stream.Write(packet_cmd, 0, packet_cmd.Length);
                     //  Wait Time (5 seconds)
                     Thread.Sleep(5000);
                 }
@@ -286,24 +307,33 @@ namespace UR_TCPip_RW_Console_app
                 Console.WriteLine("SocketException: {0}", e);
             }
         }
-
         public void Start()
         {
-            // Start a thread and listen to incoming messages
+            exit_thread = false;
+            // Start a thread to control Universal Robots (UR)
             robot_thread = new Thread(new ThreadStart(UR_Control_Thread));
+            robot_thread.IsBackground = true;
             robot_thread.Start();
         }
         public void Stop()
         {
-            // Stop and exit thread
             exit_thread = true;
-            if (robot_thread == null && robot_thread.IsAlive == true)
+            // Start a thread
+            if (robot_thread.IsAlive == true)
             {
-                // Disconnect communication
+                Thread.Sleep(100);
+            }
+        }
+        public void Destroy()
+        {
+            // Start a thread and disconnect tcp/ip communication
+            Stop();
+            if (tcp_client.Connected == true)
+            {
                 network_stream.Dispose();
                 tcp_client.Close();
-                Thread.Sleep(1000);
             }
+            Thread.Sleep(100);
         }
     }
 }
