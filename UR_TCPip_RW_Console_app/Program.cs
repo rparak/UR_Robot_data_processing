@@ -165,6 +165,7 @@ namespace UR_TCPip_RW_Console_app
 
                             // Note:
                             //  For more information on values 32... 37, etc., see the UR Client Interface document.
+                            
                             // Read Joint Values in radians
                             UR_Stream_Data.J_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (32 * offset));
                             UR_Stream_Data.J_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (33 * offset));
