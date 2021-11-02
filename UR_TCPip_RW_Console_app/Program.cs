@@ -28,6 +28,7 @@ using System;
 using System.Text;
 using System.Net.Sockets;
 using System.Threading;
+using System.Diagnostics;
 
 namespace UR_TCPip_RW_Console_app
 {
@@ -78,20 +79,20 @@ namespace UR_TCPip_RW_Console_app
             // Initialization {TCP/IP Universal Robots}
             //  Read Data:
             UR_Stream_Data.ip_address = "192.168.230.133";
-            //  Communication speed: CB-Series 125 Hz, E-Series 500 Hz
-            UR_Stream_Data.time_step = ((1 / 125) * 1000);
+            //  Communication speed: CB-Series 125 Hz (8 ms), E-Series 500 Hz (2 ms)
+            UR_Stream_Data.time_step = 8;
             //  Write Data:
             UR_Control_Data.ip_address = "192.168.230.133";
-            //  Communication speed: CB-Series 125 Hz, E-Series 500 Hz
-            UR_Control_Data.time_step = ((1 / 125) * 1000);
+            //  Communication speed: CB-Series 125 Hz (8 ms), E-Series 500 Hz (2 ms)
+            UR_Control_Data.time_step = 8;
 
             // Start Stream {Universal Robots TCP/IP}
             UR_Stream ur_stream_robot = new UR_Stream();
             ur_stream_robot.Start();
 
             // Start Control {Universal Robots TCP/IP}
-            UR_Control ur_ctrl_robot = new UR_Control();
-            ur_ctrl_robot.Start();
+            //UR_Control ur_ctrl_robot = new UR_Control();
+            //ur_ctrl_robot.Start();
 
             Console.WriteLine("[INFO] Stop (y):");
             // Stop communication
@@ -111,7 +112,7 @@ namespace UR_TCPip_RW_Console_app
 
                 // Destroy UR {Control / Stream}
                 ur_stream_robot.Destroy();
-                ur_ctrl_robot.Destroy();
+                //ur_ctrl_robot.Destroy();
 
                 // Application quit
                 Environment.Exit(0);
@@ -153,19 +154,24 @@ namespace UR_TCPip_RW_Console_app
                 // Initialization TCP/IP Communication (Stream)
                 network_stream = tcp_client.GetStream();
 
+                // Initialization timer
+                var t = new Stopwatch();
+
                 while (exit_thread == false)
                 {
                     // Get the data from the robot
                     if (network_stream.Read(packet, 0, packet.Length) != 0)
                     {
-                        if(BitConverter.ToUInt32(packet, first_packet_size - 4) == total_msg_length)
+                        if (BitConverter.ToUInt32(packet, first_packet_size - 4) == total_msg_length)
                         {
+                            // t_{0}: Timer start.
+                            t.Start();
+
                             // Reverses the order of elements in a one-dimensional array or part of an array.
                             Array.Reverse(packet);
 
                             // Note:
                             //  For more information on values 32... 37, etc., see the UR Client Interface document.
-                            
                             // Read Joint Values in radians
                             UR_Stream_Data.J_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (32 * offset));
                             UR_Stream_Data.J_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (33 * offset));
@@ -174,6 +180,7 @@ namespace UR_TCPip_RW_Console_app
                             UR_Stream_Data.J_Orientation[4] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (36 * offset));
                             UR_Stream_Data.J_Orientation[5] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (37 * offset));
                             // Read Cartesian (Positon) Values in metres
+                            Console.WriteLine(UR_Stream_Data.J_Orientation[0]);
                             UR_Stream_Data.C_Position[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (56 * offset));
                             UR_Stream_Data.C_Position[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (57 * offset));
                             UR_Stream_Data.C_Position[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (58 * offset));
@@ -181,9 +188,20 @@ namespace UR_TCPip_RW_Console_app
                             UR_Stream_Data.C_Orientation[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (59 * offset));
                             UR_Stream_Data.C_Orientation[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (60 * offset));
                             UR_Stream_Data.C_Orientation[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (61 * offset));
+
+                            // t_{1}: Timer stop.
+                            t.Stop();
+
+                            // Recalculate the time: t = t_{1} - t_{0} -> Elapsed Time in milliseconds
+                            if (t.ElapsedMilliseconds < UR_Stream_Data.time_step)
+                            {
+                                Thread.Sleep(UR_Stream_Data.time_step - (int)t.ElapsedMilliseconds);
+                            }
+
+                            // Reset (Restart) timer.
+                            t.Restart();
                         }
                     }
-                    //Thread.Sleep(UR_Stream_Data.time_step);
                 }
             }
             catch (SocketException e)
