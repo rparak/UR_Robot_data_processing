@@ -91,8 +91,8 @@ namespace UR_TCPip_RW_Console_app
             ur_stream_robot.Start();
 
             // Start Control {Universal Robots TCP/IP}
-            //UR_Control ur_ctrl_robot = new UR_Control();
-            //ur_ctrl_robot.Start();
+            UR_Control ur_ctrl_robot = new UR_Control();
+            ur_ctrl_robot.Start();
 
             Console.WriteLine("[INFO] Stop (y):");
             // Stop communication
@@ -112,7 +112,7 @@ namespace UR_TCPip_RW_Console_app
 
                 // Destroy UR {Control / Stream}
                 ur_stream_robot.Destroy();
-                //ur_ctrl_robot.Destroy();
+                ur_ctrl_robot.Destroy();
 
                 // Application quit
                 Environment.Exit(0);
