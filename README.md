@@ -34,7 +34,7 @@ Sample application in the Unity3D program (Digital-Twin):
 
 [Universal Robots UR3 - Unity3D Robotics](https://github.com/rparak/Unity3D_Robotics_UR)
 
-The project was realized at Institute of Automation and Computer Science, Brno University of Technology, Faculty of Mechanical Engineering (NETME Centre - Cybernetics and Robotics Division).
+The project was realized at the Institute of Automation and Computer Science, Brno University of Technology, Faculty of Mechanical Engineering (NETME Centre - Cybernetics and Robotics Division).
 
 <p align="center">
 <img src=https://github.com/rparak/UR_Robot_data_processing/blob/main/images/communication_scheme.png width="650" height="350">
