@@ -45,7 +45,13 @@ The project was realized at the Institute of Automation and Computer Science, Br
 **Client (C#) - Repositary [/UR_Robot_data_processing/UR_TCPip_RW_Console_app/]:**
 
 ```bash
-[ Main Program ] /Program.cs/
+[ Main Program (Read / Write Data) ] /Program.cs/
+```
+
+**Client (C#) - Repositary [/UR_Robot_data_processing/UR_TCPip_Stream_Data_app/]:**
+
+```bash
+[ Main Program (Collecting data and saving to file) ] /Program.cs/
 ```
 
 **Data Interfaces - Repositary [UR_Robot_data_processing/Client_Data_Interfaces/]:**
