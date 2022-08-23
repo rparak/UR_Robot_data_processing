@@ -29,12 +29,11 @@ The project is focused on a simple demonstration of client-server communication 
 Writing data is really simple, just create a variable of type STRING in accordance with certain principles, transform the data into a BYTE and send this command to the Server. Data is read using packets on the server (see the file for a description of the packet -> /Client_Data_Interfaces/).
 
 Further information can be found at:
-Link: 
+[REMOTE CONTROL VIA TCP/IP](https://www.universal-robots.com/articles/ur/interface-communication/remote-control-via-tcpip/)
 
 The application uses performance optimization using multi-threaded programming. Communication (C# application) can be used in Unity3D for digital twins / augmented reality or in other relevant applications. 
 
 Sample application in the Unity3D program (Digital-Twin):
-[REMOTE CONTROL VIA TCP/IP](https://www.universal-robots.com/articles/ur/interface-communication/remote-control-via-tcpip/)
 
 [Universal Robots UR3 - Unity3D Robotics](https://github.com/rparak/Unity3D_Robotics_UR)
 
