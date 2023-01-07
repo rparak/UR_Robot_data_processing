@@ -336,7 +336,6 @@ namespace UR_TCPip_RW_Console_app
             exit_thread = true;
             // Stop a thread
             Thread.Sleep(100);
-            robot_thread.Abort();
         }
         public void Destroy()
         {
