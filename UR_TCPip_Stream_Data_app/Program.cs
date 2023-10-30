@@ -131,6 +131,7 @@ namespace UR_TCPip_Stream_Data_app
         private const byte offset = 8;
 
         // Total message length in bytes
+        // Note: total_msg_length = 1409548288
         private const UInt32 total_msg_length = 3288596480;
 
         public void UR_Stream_Thread()
