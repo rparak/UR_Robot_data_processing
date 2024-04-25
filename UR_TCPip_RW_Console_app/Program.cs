@@ -125,12 +125,14 @@ namespace UR_TCPip_RW_Console_app
         // Initialization of Class variables
         //  Thread
         private Thread robot_thread = null;
-        private bool exit_thread    = false;
+        private bool exit_thread = false;
         //  TCP/IP Communication
-        private TcpClient tcp_client     = new TcpClient();
+        private TcpClient tcp_client = new TcpClient();
         private NetworkStream network_stream = null;
         //  Packet Buffer (Read)
         private byte[] packet = new byte[1116];
+        //  Main state machine
+        private int state_id = 0;
 
         // Offset:
         //  Size of first packet in bytes (Integer)
@@ -139,8 +141,8 @@ namespace UR_TCPip_RW_Console_app
         private const byte offset = 8;
 
         // Total message length in bytes
-        // Note: total_msg_length = 1409548288
-        private const UInt32 total_msg_length = 3288596480;
+        private static List<UInt32> msg_length_list = new List<UInt32>();
+        private static UInt32 total_msg_length = 0;
 
         public void UR_Stream_Thread()
         {
@@ -160,7 +162,31 @@ namespace UR_TCPip_RW_Console_app
 
                 while (exit_thread == false)
                 {
-                    // Get the data from the robot
+                    switch (state_id)
+                    {
+                        case 0:
+                            {
+                                // Getting the total message length from several runs of reading data
+                                if (network_stream.Read(packet, 0, packet.Length) != 0)
+                                {
+                                    if (msg_length_list.Count == 10)
+                                    {
+                                        msg_length_list.Sort();
+                                        total_msg_length = msg_length_list[msg_length_list.Count - 1];
+                                        state_id = 1;
+                                    }
+                                    else
+                                    {
+                                        msg_length_list.Add(BitConverter.ToUInt32(packet, first_packet_size - 4));
+                                    }
+                                }
+
+                            }
+                            break;
+                            
+                        case 1:
+                            {
+                                                    // Get the data from the robot
                     if (network_stream.Read(packet, 0, packet.Length) != 0)
                     {
                         if (BitConverter.ToUInt32(packet, first_packet_size - 4) == total_msg_length)
@@ -181,7 +207,6 @@ namespace UR_TCPip_RW_Console_app
                             UR_Stream_Data.J_Orientation[4] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (36 * offset));
                             UR_Stream_Data.J_Orientation[5] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (37 * offset));
                             // Read Cartesian (Positon) Values in metres
-                            Console.WriteLine(UR_Stream_Data.J_Orientation[0]);
                             UR_Stream_Data.C_Position[0] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (56 * offset));
                             UR_Stream_Data.C_Position[1] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (57 * offset));
                             UR_Stream_Data.C_Position[2] = BitConverter.ToDouble(packet, packet.Length - first_packet_size - (58 * offset));
@@ -202,6 +227,9 @@ namespace UR_TCPip_RW_Console_app
                             // Reset (Restart) timer.
                             t.Restart();
                         }
+                    }
+                            }
+                            break;
                     }
                 }
             }
